@@ -1,13 +1,17 @@
 {
   "name": "icce-desktop-app",
-  "version": "0.0.0",
+  "author": "Nirav dhanorkar<nirav.dhanorkar@bacancytechnology.com>",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "electron": "electron ."
   },
   "private": true,
   "dependencies": {
@@ -20,8 +24,20 @@
     "@angular/platform-browser": "^6.0.3",
     "@angular/platform-browser-dynamic": "^6.0.3",
     "@angular/router": "^6.0.3",
+    "bufferpack": "0.0.6",
     "core-js": "^2.5.4",
+    "dotenv": "5.0.1",
+    "electron-is-dev": "0.3.0",
+    "electron-reload": "1.2.2",
+    "msgpack": "1.0.2",
+    "msgpack-lite": "0.1.26",
+    "ngx-electron": "^1.0.4",
+    "peertalk": "1.0.2",
+    "promise": "8.0.1",
     "rxjs": "^6.0.0",
+    "struct": "0.0.12",
+    "usbmux": "^0.1.0",
+    "utf8": "^2.1.1",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {
@@ -43,6 +59,7 @@
     "karma-jasmine-html-reporter": "^0.2.2",
     "protractor": "~5.3.0",
     "ts-node": "~5.0.1",
-    "tslint": "~5.9.1"
+    "tslint": "~5.9.1",
+    "electron": "2.0.2"
   }
 }
