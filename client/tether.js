@@ -9,7 +9,7 @@ const port = 2345;
 function incoming(tunnel, data){
   const size = bufferpack.unpack("! I I I I", data)[3];
   msg =  data.slice(data.length - size).toString()
-  console.log("tunnel received:", msg)
+  //console.log("tunnel received:", msg)
   // echo it back plus
   echo = utf8.encode("echo:" + "foo");
   tunnel.write(bufferpack.pack("! I I I I", [1,101,0,echo.length+4]));
@@ -42,7 +42,7 @@ function createTunnel(udid, incoming, close) {
     .then(function(tunnel) {
       // tunnel is just a net.Socket connection to the device port
       // you can write / .on('data') it like normal
-      console.log('Tunnel created on %s', udid, incoming);
+      //console.log('Tunnel created on %s', udid, incoming);
 
       tunnel.on('data', (data) => {
           incoming(tunnel, data)
