@@ -12,9 +12,9 @@ const electron = require("electron");
 const path = require("path");
 const reload = require("electron-reload");
 const isDev = require("electron-is-dev");
-var Ghost = require("./client/ghost");
-var GMessage = require("./client/gmessage");
-var authorize = require("./client/auth");
+var Ghost = require("./client/ghost")
+var GMessage = require("./client/gmessage")
+var authorize = require("./client/auth")
 
 const { app, BrowserWindow, ipcMain, dialog } = electron;
 let mainWindow = null;
@@ -33,9 +33,7 @@ app.on( "window-all-closed", () => {
 app.on( "ready", () => {
     mainWindow = new BrowserWindow( { width: 600, height: 600 } );
     // mainWindow.loadURL( `file://${ __dirname }/index.html` );
-    mainWindow.loadURL( `http://localhost:4200` );
-
-    if ( isDev ) {
+    mainWindow.loadURL( `http://localhost:4200` );    if ( isDev ) {
         mainWindow.webContents.openDevTools();
     }
     mainWindow.once( "ready-to-show", () => {
@@ -63,18 +61,19 @@ ipcMain.on( "authorize", (e, arg )=> {
   .then(function(result){
     ghost = result
     console.log("Full ghost object:", ghost)
-
     console.log("authorization complete, got user:", ghost.user)
     // socket will be a ghost connection with user information
     // should it also have a tether communication object
     // ghost can also send a GMessage
-
     mainWindow.webContents.send("loginResponse", ghost.user)
     //
     // ghost is an event emitter:
     // you must handle errors
     ghost.on('error', function(msg){
       console.log("ghost error:", msg.body.error)
+    })
+    ghost.on('closed', function(msg){
+      console.log("ghost closed:", msg)
     })
     ghost.on('System.Stats', function(response){
         console.log("System:Stats:", response)
@@ -98,20 +97,21 @@ ipcMain.on( "authorize", (e, arg )=> {
   })
   .catch(function(err){
     mainWindow.webContents.send("loginResponse", err);
+
     console.log("unable to authorize marketplaceserivce:", err)
   })
 })
 
+
 ipcMain.on("logout", (e, arg) => {
   try{
-    // ghost.close();
+    ghost.close()
     mainWindow.webContents.send("logoutResponse", "success");
   }catch(err){
     console.log("logout error: ",err);
     mainWindow.webContents.send("logoutResponse", err);
   }
 })
-
 // stats is an example of a request (rather than send)
 // which returns a Promise. requests require the msgCounter
 // be provided as an argument, so that ghost can match the

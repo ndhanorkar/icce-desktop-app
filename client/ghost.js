@@ -2,7 +2,7 @@
 const Promise = require('promise')
 const tls = require('tls');
 const fs = require('fs');
-const GMessage = require("./gmessage");
+const GMessage = require("./gmessage")
 const EventEmitter = require('events');
 
 class Ghost extends EventEmitter {
@@ -50,6 +50,8 @@ class Ghost extends EventEmitter {
 
   close(){
     this.socket.destroy()
+    this.tether.tunnel.end()
+    this.emit("closed", "ghost is closed")
   }
 
   send(message){

@@ -14,7 +14,7 @@ const appRoutes = [
     },
     {
         path:"",
-        redirectTo: '/login', 
+        redirectTo: '/login',
         pathMatch:'full'
     },
     {

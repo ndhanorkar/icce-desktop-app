@@ -9,7 +9,7 @@ const port = 2345;
 function incoming(tunnel, data){
   const size = bufferpack.unpack("! I I I I", data)[3];
   msg =  data.slice(data.length - size).toString()
-  //console.log("tunnel received:", msg)
+  console.log("tunnel received:", msg)
   // echo it back plus
   echo = utf8.encode("echo:" + "foo");
   tunnel.write(bufferpack.pack("! I I I I", [1,101,0,echo.length+4]));
