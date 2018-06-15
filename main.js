@@ -28,18 +28,19 @@ app.on( "window-all-closed", () => {
     if ( process.platform !== "darwin" ) {
         app.quit();
     }
-});
+} );
 
 app.on( "ready", () => {
     mainWindow = new BrowserWindow( { width: 600, height: 600 } );
     // mainWindow.loadURL( `file://${ __dirname }/index.html` );
     mainWindow.loadURL( `http://localhost:4200` );
+
     if ( isDev ) {
         mainWindow.webContents.openDevTools();
     }
     mainWindow.once( "ready-to-show", () => {
        mainWindow.show();
-    } );
+   } );
     mainWindow.on( "closed", () => {
         mainWindow = null;
     } );
@@ -55,22 +56,20 @@ ipcMain.on( "show-dialog", ( e, arg ) => {
 } );
 
 var ghost = {}
+var msgCounter = 10000
 
 ipcMain.on( "authorize", (e, arg )=> {
   authorize('marketplaceservice', 'ICCE-Desktop')
   .then(function(result){
     ghost = result
+    console.log("Full ghost object:", ghost)
+
     console.log("authorization complete, got user:", ghost.user)
     // socket will be a ghost connection with user information
     // should it also have a tether communication object
     // ghost can also send a GMessage
-    var msg = new GMessage()
-    var args = {"id":ghost.user.Id}
-    buf = msg.request("System", "Stats", GhostMsgGenus.MAP, -1, args)
-    ghost.send(buf)
 
     mainWindow.webContents.send("loginResponse", ghost.user)
-
     //
     // ghost is an event emitter:
     // you must handle errors
@@ -98,19 +97,78 @@ ipcMain.on( "authorize", (e, arg )=> {
     //
   })
   .catch(function(err){
-    //if no response from the server - may be any any connection issue from iphone
-    mainWindow.webContents.send("loginResponse", null)
-    console.log("unable to authorize marketplaceserivcce:", err)
+    mainWindow.webContents.send("loginResponse", err);
+    console.log("unable to authorize marketplaceserivce:", err)
   })
 })
 
+ipcMain.on("logout", (e, arg) => {
+  try{
+    // ghost.close();
+    mainWindow.webContents.send("logoutResponse", "success");
+  }catch(err){
+    console.log("logout error: ",err);
+    mainWindow.webContents.send("logoutResponse", err);
+  }
+})
+
+// stats is an example of a request (rather than send)
+// which returns a Promise. requests require the msgCounter
+// be provided as an argument, so that ghost can match the
+// request with the response.
+// Increment the msgCounter so it can be used in the next request
 ipcMain.on("stats", (e, arg) => {
   var msg = new GMessage()
   var args = {"id":ghost.user.Id}
-  buf = msg.request("System", "Stats", GhostMsgGenus.MAP, -1, args)
-  ghost.send(buf)
+  buf = msg.request("System", "Stats", GhostMsgGenus.MAP, msgCounter, args)
+  ghost.request(buf, msgCounter++).then(function(response){
+    console.log("System Stats response:", response)
+  }).catch(function(err){
+    console.log("System Stats request got error:", err)
+  })
 })
 
+// fees is another example of a request
+ipcMain.on("fees", (e, arg) => {
+  var msg = new GMessage()
+  var args = {"id":ghost.user.Id}
+  buf = msg.request("System", "Fees", GhostMsgGenus.MAP, msgCounter, args)
+  ghost.request(buf, msgCounter++).then(function(response){
+    console.log("System Fees response:", response)
+  }).catch(function(err){
+    console.log("System Fees request got error:", err)
+  })
+})
+
+// balance is another example of a request
+ipcMain.on("balance", (e, arg) => {
+  var msg = new GMessage()
+  var args = {"id":ghost.user.Id}
+  buf = msg.request("System", "Balance", GhostMsgGenus.MAP, msgCounter, args)
+  ghost.request(buf, msgCounter++).then(function(response){
+    console.log("System Balance response:", response)
+  }).catch(function(err){
+    console.log("System Balance request got error:", err)
+  })
+})
+
+// accounts is another example of a request
+ipcMain.on("accounts", (e, arg) => {
+  var msg = new GMessage()
+  var args = {"id":ghost.user.Id}
+  buf = msg.request("User", "ACHAccounts", GhostMsgGenus.MAP, msgCounter, args)
+  ghost.request(buf, msgCounter++).then(function(response){
+    console.log("User ACHAccounts response:", response)
+  }).catch(function(err){
+    console.log("User ACHAccounts request got error:", err)
+  })
+})
+
+// buyMarket is an example of a "sent" message
+// it will result in multiple callbacks representing the
+// state of the buyMarket transaction. These multiple states
+// are captured in the ghost.on("Open.BUY"....) style of
+// asynchronous callbacks
 ipcMain.on("buyMarket", (e, arg) => {
   var commission = 0.05
   var amount = 10

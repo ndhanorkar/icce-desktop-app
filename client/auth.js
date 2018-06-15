@@ -12,6 +12,9 @@ function authorizeUserFor(authToken, app, ghost, resolve, reject){
   var peerTalk = new PeerTalk()
   var ignoreFirstData = false
   peerTalk.then((tether) => {
+    if (tether === undefined){
+      reject("unable to access tether")
+    }
     console.log("authorizeUserFor:sending:", authToken)
     var auth = {
       app: app,
@@ -32,7 +35,6 @@ function authorizeUserFor(authToken, app, ghost, resolve, reject){
       // 4. Recieve User (or error) from tethered mobile device
       var buf = Buffer.from(data)
       var msg = msgpack.unpack(buf)
-      console.log("tether:msg:", msg)
       if ( msg.err === undefined ){
         // 5. Connect User to GhostConn
         ghost["user"] = msg
@@ -44,8 +46,11 @@ function authorizeUserFor(authToken, app, ghost, resolve, reject){
     })
     tether.on("closed", () => {
       console.log("tether closed, exiting....")
-      process.exit()
+      reject("tether closed")
     })
+  })
+  .catch((err) => {
+    reject(err)
   })
 }
 

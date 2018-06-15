@@ -45,13 +45,14 @@ function PeerTalk(options, port) {
          event = new events.EventEmitter();
           console.log("listening on ", port);
         return usbmux.getTunnel(port, options).then((tunnel) => {
+          console.log("got tunnel...")
             event.on("send", (msg) => {
-              console.log("PeerTalk:send:", msg)
+              //console.log("PeerTalk:send:", msg)
               if ( msg.type === pType.STRING){
                 mp = encode(pType.STRING, msg.body)
-                console.log("mp:", mp)
+                //console.log("mp:", mp)
                 tunnel.write(mp)
-                console.log("finished writing some shit")
+                //console.log("finished writing some shit")
                 //msg = utf8.encode(msg.body);
                 //tunnel.write(bufferpack.pack("! I I I I", [1,101,0,msg.length+4]));
                 //console.log("bp:", bufferpack.pack("! I I I I", [1,101,0,msg.length+4]))
@@ -63,10 +64,10 @@ function PeerTalk(options, port) {
                 //var fuck = msg.body.toString('utf8')
                 //tunnel.write(bufferpack.pack("! I I I I", [1,101,0,fuck.length+4]));
                 //tunnel.write(bufferpack.pack(`! I ${fuck.length}s`, [fuck.length, fuck]));
-                console.log("mp:", msg)
+                //console.log("mp:", msg)
                 mp = encode(msg.type, msg.body)
                 tunnel.write(mp)
-                console.log("wrote msgpack on tunnel")
+                //console.log("wrote msgpack on tunnel")
               } else {
                 console.log("WTF:", msg)
               }
@@ -83,11 +84,14 @@ function PeerTalk(options, port) {
 
             tunnel.on("data", (data) => {
                 const size = bufferpack.unpack("! I I I I", data)[3];
-                console.log("PeerTalk:data:size:", size)
+                //console.log("PeerTalk:data:size:", size)
                 event.emit("data", data.slice(data.length - size));
             });
 
             return event;
+        })
+        .catch(function(err){
+          console.log("usbmux tunnel error:", err)
         });
 }
 

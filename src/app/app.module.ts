@@ -9,15 +9,13 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 import { HomeComponent } from './components/home/home.component';
 import { routing } from './routing/app.routing';
 import { LoginComponent } from './components/login/login.component';
-import { AuthErrorComponent } from './components/auth-error/auth-error.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PageNotFoundComponent,
     HomeComponent,
-    LoginComponent,
-    AuthErrorComponent
+    LoginComponent
   ],
   imports: [
     BrowserModule,

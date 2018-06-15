@@ -2,7 +2,7 @@
 const Promise = require('promise')
 const tls = require('tls');
 const fs = require('fs');
-const GMessage = require("./gmessage")
+const GMessage = require("./gmessage");
 const EventEmitter = require('events');
 
 class Ghost extends EventEmitter {
@@ -56,6 +56,20 @@ class Ghost extends EventEmitter {
     //console.log("Ghost.send:", message)
     this.socket.write(message)
   }
+
+  request(message, msgid){
+    var ack = this
+    return new Promise(function(resolve, reject){
+      ack.socket.write(message)
+      ack.on("response.message", function(response){
+        //console.log("message sequence:", msgid, " response sequence:", response.msgid)
+        if (response.msgid === msgid){
+          resolve(response.body)
+        }
+      })
+    })
+  }
+
   parse(data){
     if (!this.socket.authorized){
       return
@@ -64,6 +78,7 @@ class Ghost extends EventEmitter {
     // first msg should be a
     var msg = new GMessage()
     msg.decode(buf)
+    //console.log("ghost.parse:", msg)
     switch(msg.msgType){
       case global.GhostMsgType.PONG:
         if (this.ready === false){
@@ -72,7 +87,12 @@ class Ghost extends EventEmitter {
         }
         break;
       case global.GhostMsgType.RES_MSG:
-        this.emit(msg.body.target + "." + msg.body.behavior, msg.body)
+        var b = msg.body
+        if ('target' in b && 'behavior' in b) {
+          this.emit(b.target + '.' + b.behavior, b)
+        } else {
+          this.emit("response.message", msg)
+        }
         break;
 
       case global.GhostMsgType.REQ_MSG:

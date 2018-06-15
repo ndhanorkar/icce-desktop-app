@@ -35,6 +35,8 @@ global.GhostMsgType = {
   LASTGMSG: 11,
 }
 
+var msgCount = 1
+
 function gmessage(obj) {
   if (!(this instanceof gmessage)){
     return new gmessage(obj)
@@ -45,7 +47,12 @@ function gmessage(obj) {
   this.msgType = obj.msgType
   this.genus = obj.genus
   this.selector = obj.selector
-  this.msgid = obj.msgid
+  if (obj.msgid > 0){
+    this.msgid = obj.msgid
+  } else {
+    this.msgid = msgCount++
+  }
+
   this.body = obj.body
 }
 
@@ -85,7 +92,7 @@ gmessage.prototype.decode = function(buf){
     buf.copy(body, 0, 12 + sLen)
     this.body = msgpack.unpack(body)
   }
-  console.log("gMessage:decode:", this)
+  //console.log("gMessage:decode:", this)
 }
 
 gmessage.prototype.request = function(behavior, target, genus, msgid, args){
@@ -95,7 +102,7 @@ gmessage.prototype.request = function(behavior, target, genus, msgid, args){
     var msg = new gmessage({selector:selector, genus:genus, msgid:msgid, msgType:global.GhostMsgType.REQ_MSG})
     msg.selector = selector
     msg.body = body
-
+    //console.log("GMessage.request:", msg.msgid)
     return msg.encode()
 }
 
