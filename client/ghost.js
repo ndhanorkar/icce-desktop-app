@@ -2,7 +2,7 @@
 const Promise = require('promise')
 const tls = require('tls');
 const fs = require('fs');
-const GMessage = require("./gmessage")
+const GMessage = require("./gmessage");
 const EventEmitter = require('events');
 
 class Ghost extends EventEmitter {

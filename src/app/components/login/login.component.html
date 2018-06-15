@@ -1,15 +1,57 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ appName }}!
-  </h1>
-  <p>
-    Please Plug Your Phone into this Computer with the USB Cable and Launch your ICCE application.
-    <br/>
-    Click Button BelowOnce it’s been plugged in and you have selected the Remote Authentication Option in the app menu
-  </p>
-  <div class="btn btn-success" (click)="login()">
-    Proceed
-  </div>      
+
+hi login page is here.
+<div style="text-align:center" [ngSwitch]= "page">  
+  <!-- login block -->  
+  <div *ngSwitchCase="'login'">
+    <h1>
+      Welcome to {{ appName }}!
+    </h1>
+    <p>
+      Please Plug Your Phone into this Computer with the USB Cable and Launch your ICCE application.
+      <br/>
+      Click Button BelowOnce it’s been plugged in and you have selected the Remote Authentication Option in the app menu
+    </p>
+    <div class="btn btn-success" (click)="login()">      
+      Proceed
+    </div>      
+      
+  </div>
+
+  <!-- retry block 1 -->
+  <div *ngSwitchCase=" 'try1' ">
+    <p>
+      Currently Unable to access the ICCE application. Please insure each of the following is true:  
+    </p>
+    <p>
+      1. Have you plugged in your phone using the USB Cable?
+      <br>
+      2. Have you launched the ICCE application on your mobile phone?
+      <br>
+      3. Have you selected the Remote Authentication option from the ICCE app main menu (located in the upper left corner)?
+    </p>
+    <div class="btn btn-primary" (click)="login()">
+      TRY AGAIN
+    </div>     
+          
+  </div>
+  <!-- retry block 2 -->
+  <div *ngSwitchCase=" 'try2' ">
+    <p>
+      There was a problem authenticatingyour request. Would youlike to try again?
+    </p>
+    <div class="btn btn-primary" (click)="login()">
+      TRY AGAIN
+    </div>     
+          
+  </div>
+
+  <!-- retry block 2 -->
+  <!-- <div *ngSwitchDefault>
+      <p>
+        loading...
+      </p>
+  </div> -->
+
 </div>
   

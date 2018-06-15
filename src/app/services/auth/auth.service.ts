@@ -17,7 +17,6 @@ export class AuthService {
   }
 
   loginfn(){
-    this.isLoggedIn = false;
     // headers.append('Content-Type', 'application/X-www-form-urlencoded');
     // if(this._electronService.isElectronApp) {
     //   this.authorize = this._electronService.ipcRenderer.send( "authorize", {} );
