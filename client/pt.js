@@ -87,7 +87,8 @@ function PeerTalk(options, port) {
                 //console.log("PeerTalk:data:size:", size)
                 event.emit("data", data.slice(data.length - size));
             });
-
+            // need tunnel to close connection from app
+            event["tunnel"] = tunnel
             return event;
         })
         .catch(function(err){

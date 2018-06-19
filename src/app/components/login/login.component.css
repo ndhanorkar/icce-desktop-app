@@ -1,0 +1,10 @@
+.circle {
+	width: 90px;
+	height: 90px;
+    border-radius: 90px;
+    border: 1px solid;
+    text-align: center;
+	display: table-cell;
+	overflow: hidden;
+    vertical-align: middle;        
+}
