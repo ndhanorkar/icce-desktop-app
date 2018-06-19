@@ -38,6 +38,7 @@ export class LoginComponent{
         // if user exist redirecting to home page.
         if(userObj.Id){
           localStorage.setItem('auth_key', userObj.Id);
+          localStorage.setItem('Handle', userObj.Identity.Handle);
           this._router.navigate(['home'])
         }else{          
           // redirecting to different retry pages.

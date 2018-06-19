@@ -7,9 +7,9 @@ import {ElectronService} from 'ngx-electron';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent{
-
+  handle:string;
   constructor(private _router:Router, private _electronService: ElectronService, private _ngZone: NgZone) { 
-    
+    this.handle =  localStorage.getItem("Handle");
   }
 
   logout(){
@@ -25,7 +25,7 @@ export class HomeComponent{
         console.log("in logoutResponse", resObj);
 
         if(resObj == "success"){
-          localStorage.removeItem('auth_key');
+          localStorage.clear();
           this._router.navigate(['login']);       
         }else{
           console.log("error", resObj);
