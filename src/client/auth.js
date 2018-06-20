@@ -84,6 +84,7 @@ var authorize = function(serviceName, appName, callback){
         reject(err)
       })
       var server = server[serviceName].split(":")
+      console.log(" process.env.CERTS=", process.env.CERTS)
       ghost.connect(server[0], server[1], process.env.CERTS)
     }
   })
