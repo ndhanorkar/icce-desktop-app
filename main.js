@@ -1,20 +1,13 @@
 "use strict";
 exports.__esModule = true;
-// set up local environment
-var dotenv = require('dotenv');
-var result = dotenv.config();
-if (result.error) {
-    throw result.error;
-}
-var electron = require("electron");
-var path = require("path");
-// const reload = require("electron-reload");
-var isDev = require("electron-is-dev");
-var Ghost = require("./client/ghost");
-var GMessage = require("./client/gmessage");
-var authorize = require("./client/auth");
 var electron_1 = require("electron");
 var url = require("url");
+var path = require("path");
+// const dotenv:any = require('dotenv')
+// const result:any = dotenv.config()
+// if (result.error) {
+//   throw result.error
+// }
 var mainWindow = null;
 var serve;
 var args = process.argv.slice(1);
@@ -23,6 +16,45 @@ serve = args.some(function (val) { return val === '--serve'; });
 // 	const electronPath = path.join(__dirname, "node_modules", ".bin", "electron");
 // 	reload(__dirname, { electron: electronPath });
 // }
+// if (serve) {
+//   console.log("serve: ghost")
+//   var Ghost = require("./src/client/ghost");
+//   var GMessage = require("./src/client/gmessage");
+//   var authorize = require("./src/client/auth");
+// } else {
+//   console.log("not serve: ghost")
+//   var Ghost = require(`${__dirname}/dist/client/ghost`);
+//   var GMessage = require(`${__dirname}/dist/client/gmessage`);
+//   var authorize = require(`${__dirname}/dist/client/auth`);
+// }
+var Ghost;
+var GMessage;
+var authorize;
+// set up local environment
+var dotenv = require('dotenv');
+var result;
+if (serve) {
+    console.log("serve");
+    Ghost = require("./src/client/ghost");
+    GMessage = require("./src/client/gmessage");
+    authorize = require("./src/client/auth");
+    result = dotenv.config();
+    if (result.error) {
+        throw result.error;
+    }
+    process.env.CERTS = "./src/client/certs";
+}
+else {
+    console.log("not serve");
+    Ghost = require(path.join(process.resourcesPath, 'app/dist/client/ghost'));
+    GMessage = require(path.join(process.resourcesPath, 'app/dist/client/gmessage'));
+    authorize = require(path.join(process.resourcesPath, 'app/dist/client/auth'));
+    result = dotenv.config({ path: path.join(process.resourcesPath, 'app/.env') });
+    if (result.error) {
+        throw result.error;
+    }
+    process.env.CERTS = path.join(process.resourcesPath, 'app/dist/client/certs');
+}
 function createWindow() {
     var electronScreen = electron_1.screen;
     var size = electronScreen.getPrimaryDisplay().workAreaSize;
@@ -47,11 +79,12 @@ function createWindow() {
             slashes: true
         }));
     }
+    mainWindow.webContents.openDevTools();
     // mainWindow.loadURL( `file://${ __dirname }/index.html` );
     // mainWindow.loadURL( `http://localhost:4200` );  
-    if (isDev) {
-        mainWindow.webContents.openDevTools();
-    }
+    // if ( isDev ) {
+    //     mainWindow.webContents.openDevTools();
+    // }
     mainWindow.once("ready-to-show", function () {
         mainWindow.show();
     });
